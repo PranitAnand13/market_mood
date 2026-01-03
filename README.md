@@ -42,7 +42,7 @@ This project is part of the **WiDS Market Mood and Moves** program.
 
 - The project emphasizes clarity and correctness of the data pipeline.
 - All steps are implemented in a modular notebook structure.
-- Live API usage is limited to ensure reproducibility.
+  
 
 ---
 
