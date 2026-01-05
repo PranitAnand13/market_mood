@@ -1,1 +1,205 @@
+# Concepts Learned – Market Mood and Moves (Midterm)
+
+This document summarizes the conceptual understanding gained during the first
+half of the Market Mood and Moves project. The focus has been on studying the
+theoretical foundations behind sentiment-driven financial systems, particularly
+from the Week 1 and Week 2 reading material, while exploring partial
+implementation.
+
+---
+
+## Behavioral Finance and Market Sentiment
+
+Classical financial theory assumes that markets are efficient and that prices
+fully reflect all available information. Behavioral finance challenges this
+assumption by incorporating psychological and social factors into market
+behavior. Investors often exhibit cognitive biases such as overconfidence,
+loss aversion, and herd behavior, which can lead to short-term mispricing.
+
+Herd behavior refers to the tendency of investors to follow the actions of the
+majority rather than relying on independent analysis. News events play a key
+role in triggering herd behavior, as widely disseminated information can
+simultaneously influence a large number of market participants. This project
+treats news sentiment as a proxy for collective investor psychology rather than
+long-term fundamental value.
+
+---
+
+## Market Sentiment as a Quantitative Signal
+
+Market sentiment represents the overall emotional tone of market participants
+toward a company or the broader market. Although sentiment is qualitative by
+nature, it can be quantified by applying Natural Language Processing (NLP)
+techniques to financial text such as news headlines.
+
+In the context of this project, sentiment scores extracted from news are viewed
+as short-term signals that may precede price movements, especially around
+earnings announcements, macroeconomic events, or unexpected news releases.
+
+---
+
+## Data Ingestion and the Role of APIs
+
+Data ingestion refers to the systematic process of collecting raw data from
+external sources before any analysis is performed. During Week 1, APIs such as
+NewsAPI were studied to understand how live financial news can be fetched
+programmatically, validated, and stored in a structured format.
+
+Secure handling of API keys and reproducibility were emphasized, as real-world
+financial systems must ensure data integrity while respecting access limits and
+security constraints.
+
+---
+
+## Evolution of Word Representations in NLP
+
+Early NLP models relied on static word embeddings such as Word2Vec and GloVe,
+which assign a single vector representation to each word in the vocabulary.
+These models suffer from the problem of polysemy, where a word can have multiple
+meanings depending on context.
+
+A classic example is the word “bank,” which can refer to a financial institution
+or the side of a river. In static embedding models, these meanings are averaged
+into a single representation, leading to semantic ambiguity.
+
+---
+
+## Contextual Embeddings and the BERT Breakthrough
+
+BERT (Bidirectional Encoder Representations from Transformers) introduced the
+concept of contextual embeddings, where the representation of a word is a
+function of its surrounding context. In BERT, an embedding is no longer a lookup
+table but a learned function that dynamically adapts based on neighboring words.
+
+This contextualization allows BERT to generate different vector representations
+for the same word when used in different sentences, resolving many of the
+limitations of static embeddings.
+
+---
+
+## BERT Input Representation
+
+BERT constructs its input representation as the sum of three components:
+
+- **Token embeddings**, generated using WordPiece tokenization
+- **Positional embeddings**, which encode the position of each token in the
+  sequence
+- **Segment embeddings**, which distinguish between multiple input sentences
+
+WordPiece tokenization is particularly useful in finance, as it allows rare or
+compound financial terms to be broken into meaningful subword units, mitigating
+the out-of-vocabulary problem.
+
+---
+
+## Transformer Encoder and Self-Attention
+
+The core computational unit of BERT is the Transformer encoder block, which uses
+self-attention mechanisms to model relationships between words in a sentence.
+Self-attention allows each token to query every other token and weigh their
+importance dynamically.
+
+This mechanism is especially powerful for financial text, where the sentiment
+of a word often depends on surrounding qualifiers, numerical values, and
+contextual cues.
+
+---
+
+## Pre-Training Objectives in BERT
+
+BERT is trained using two primary objectives:
+
+1. **Masked Language Modeling (MLM)**  
+   Random tokens in the input are masked, and the model is trained to predict
+   the original words. This encourages the model to learn deep syntactic and
+   semantic relationships within language.
+
+2. **Next Sentence Prediction (NSP)**  
+   The model learns to predict whether one sentence logically follows another,
+   which helps it capture inter-sentence relationships.
+
+The 80-10-10 masking strategy used in MLM prevents the model from relying too
+heavily on the masking token itself, improving robustness.
+
+---
+
+## Domain Shift in Financial Language
+
+Although BERT performs well on general English, financial language exhibits a
+statistically different distribution. Words such as “liability,” “loss,” or
+“depression” often carry neutral or technical meanings in finance but are
+interpreted as negative in everyday language.
+
+This mismatch between training data and target domain is known as **domain
+shift**, and it motivates the use of domain-adapted models for financial NLP.
+
+---
+
+## FinBERT and Domain Adaptation
+
+FinBERT addresses the domain shift problem through transfer learning with domain
+adaptation. Starting from a general BERT model trained on Wikipedia, FinBERT
+undergoes further pre-training on large financial corpora such as the
+TRC2-Financial dataset.
+
+This additional training phase allows the model to internalize the statistical
+structure and semantics of financial language before being fine-tuned on
+labeled sentiment data from the Financial PhraseBank.
+
+Empirical results show that FinBERT significantly outperforms lexicon-based
+methods and standard BERT models on financial sentiment tasks.
+
+---
+
+## Sentiment Classification and Output Interpretation
+
+For sentiment analysis, a classification head is attached to the `[CLS]` token.
+The model outputs logits corresponding to three sentiment classes:
+Positive, Negative, and Neutral. These logits are converted into probabilities
+using a softmax function, enabling confidence-aware sentiment scoring.
+
+Such probabilistic outputs are well suited for aggregation and integration into
+quantitative trading pipelines.
+
+---
+
+## Industry-Standard Challenges in Financial NLP
+
+The Week 2 material also introduced several advanced challenges faced in
+production environments:
+
+- **Catastrophic Forgetting**, where domain adaptation may cause the model to
+  lose general-language knowledge
+- **The 512-token limit**, which restricts the length of input sequences and
+  necessitates chunking strategies for long financial documents
+- **Learning rate scheduling**, such as slanted triangular learning rates, to
+  stabilize fine-tuning
+
+These challenges highlight the gap between theoretical models and real-world
+deployment.
+
+---
+
+## Look-Ahead Bias and Time Alignment
+
+Look-ahead bias arises when future information is mistakenly incorporated into
+past observations. In sentiment-based financial systems, this commonly occurs if
+news published after market close is incorrectly aligned with the same trading
+day.
+
+The project explicitly addresses this issue by mapping news timestamps to the
+correct trading day based on market hours and weekends, ensuring realistic data
+alignment.
+
+---
+
+## Summary of Learnings
+
+At the midterm stage, the project has emphasized conceptual understanding and
+pipeline correctness. Theoretical foundations from behavioral finance and
+transformer-based NLP models have been studied in depth, while practical
+exploration has focused on sentiment extraction, data alignment, and feature
+preparation.
+
+
 
